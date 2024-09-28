@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable
 
 @Controller("/")
 class WebController(
-    @Autowired private val repo: SnippetRepo,
+    @Autowired private val repo: SnippetRepository,
     @Autowired private val resourceLoader: ResourceLoader
 ) {
 
@@ -22,7 +22,12 @@ class WebController(
         @PathVariable id: Int,
         model: Model
     ): String {
-        val snippet = repo.get(id)
+        val snippet: Snippet
+        try {
+            snippet = repo.findById(id).orElseThrow()
+        } catch (e: Exception) {
+            throw UnknownSnippetException(e)
+        }
         model.addAttribute("snippet", snippet)
         return "code"
 
@@ -30,7 +35,7 @@ class WebController(
 
     @GetMapping("/code/latest")
     fun getLatest(model: Model): String {
-        val snippets = repo.getLatest()
+        val snippets = repo.findFirst10ByOrderByLastModifiedDesc()
         model.addAttribute("snippets", snippets)
         return "latest"
     }

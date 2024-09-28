@@ -11,12 +11,12 @@ import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api")
-class ApiController(@Autowired private val repo: SnippetRepo) {
+class ApiController(@Autowired private val repo: SnippetRepository) {
 
     @PostMapping("/code/new")
     fun postNewCode(@RequestBody body: PostNewCodeDto): ResponseEntity<PostNewCodeResponse> {
-        val newCode = Snippet(body.code, LocalDateTime.now())
-        val index = repo.add(newCode)
+        val newCode = Snippet(0, body.code, LocalDateTime.now())
+        val index = repo.save(newCode).id
         val response = PostNewCodeResponse(index.toString())
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_JSON)
@@ -25,7 +25,7 @@ class ApiController(@Autowired private val repo: SnippetRepo) {
 
     @GetMapping("/code/latest")
     fun getLatestCode(): ResponseEntity<List<CodeDto>> {
-        val dtoList = repo.getLatest().map(::CodeDto)
+        val dtoList = repo.findFirst10ByOrderByLastModifiedDesc().map(::CodeDto)
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(dtoList)
@@ -33,7 +33,12 @@ class ApiController(@Autowired private val repo: SnippetRepo) {
 
     @GetMapping("/code/{id}")
     fun getCode(@PathVariable id: Int): ResponseEntity<CodeDto> {
-        val dto = CodeDto(repo.get(id))
+        val dto: CodeDto
+        try {
+            dto = CodeDto(repo.findById(id).orElseThrow())
+        } catch (e: NoSuchElementException) {
+            throw UnknownSnippetException(e)
+        }
         return ResponseEntity.ok()
             .contentType(MediaType.APPLICATION_JSON)
             .body(dto)

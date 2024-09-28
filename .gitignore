@@ -19,4 +19,5 @@ Topics
 !/Code-sharing Platform/task/
 /Code-sharing Platform/task/*
 !/Code-sharing Platform/task/src
+!/Code-sharing Platform/task/build.gradle
 

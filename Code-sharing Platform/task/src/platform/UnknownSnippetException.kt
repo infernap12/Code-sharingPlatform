@@ -1,3 +1,3 @@
 package platform
 
-class UnknownSnippetException(e: IndexOutOfBoundsException) : RuntimeException(e)
+class UnknownSnippetException(e: Throwable) : RuntimeException(e)
