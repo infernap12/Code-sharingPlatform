@@ -1,32 +1,41 @@
 package platform
 
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import platform.api.CodeDto
 import platform.api.PostNewCodeDto
-import java.time.LocalDate
+import platform.api.PostNewCodeResponse
+import java.time.LocalDateTime
 
 @RestController
 @RequestMapping("/api")
-class ApiController {
-    @GetMapping("/code")
-    fun getCode(): ResponseEntity<CodeDto> {
-        val dto = CodeDto(CodeSharingPlatform.getCode())
-        return ResponseEntity.ok()
-            .contentType(MediaType.APPLICATION_JSON)
-            // todo break into separate service
-            .body(dto)
-    }
+class ApiController(@Autowired private val repo: SnippetRepo) {
 
     @PostMapping("/code/new")
-    fun postNewCode(@RequestBody body: PostNewCodeDto): ResponseEntity<String> {
-        val newCode = CodeEntity(body.code, LocalDate.now())
-        CodeSharingPlatform.setCode(newCode)
-        return ResponseEntity.ok().body("{}")
+    fun postNewCode(@RequestBody body: PostNewCodeDto): ResponseEntity<PostNewCodeResponse> {
+        val newCode = Snippet(body.code, LocalDateTime.now())
+        val index = repo.add(newCode)
+        val response = PostNewCodeResponse(index.toString())
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(response)
+    }
+
+    @GetMapping("/code/latest")
+    fun getLatestCode(): ResponseEntity<List<CodeDto>> {
+        val dtoList = repo.getLatest().map(::CodeDto)
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(dtoList)
+    }
+
+    @GetMapping("/code/{id}")
+    fun getCode(@PathVariable id: Int): ResponseEntity<CodeDto> {
+        val dto = CodeDto(repo.get(id))
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(dto)
     }
 }
