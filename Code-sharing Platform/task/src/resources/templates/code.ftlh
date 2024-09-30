@@ -9,6 +9,12 @@
 </head>
 <body>
 <span id="load_date">${snippet.getTimeString()}</span>
+<#if snippet.viewsRestricted>
+    <div><span id="views_restriction">${snippet.views} more views allowed</span></div>
+</#if>
+<#if snippet.timeRestricted>
+    <div><span id="time_restriction">The code will be available for ${snippet.time} seconds</span></div>
+</#if>
 <pre id="code_snippet"><code>${snippet.code}</code></pre>
 </body>
 </html>

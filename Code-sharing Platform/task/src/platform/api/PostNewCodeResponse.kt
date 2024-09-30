@@ -1,5 +1,7 @@
 package platform.api
 
+import java.util.*
+
 data class PostNewCodeResponse(
-    val id: String
+    val id: UUID
 )

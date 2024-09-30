@@ -1,12 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" type="text/css" href="/newCode.css">
     <meta charset="UTF-8">
     <title>Create</title>
 </head>
 <body>
 <h2>Update Code Snippet</h2>
-<textarea id="code_snippet"></textarea>
+<div>
+    <label for="code_snippet">Code to upload</label><textarea id="code_snippet"></textarea>
+</div>
+<div>
+    <label for="time_restriction">Seconds ttl</label><input id="time_restriction" type="text"/>
+</div>
+<div>
+    <label for="views_restriction">Views</label><input id="views_restriction" type="text"/>
+</div>
 <p>
     <button id="send_snippet" type="submit" onclick="send()">Submit</button>
 </p>

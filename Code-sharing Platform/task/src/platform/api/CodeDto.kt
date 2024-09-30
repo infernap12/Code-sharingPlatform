@@ -2,10 +2,21 @@ package platform.api
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import platform.Snippet
+import java.time.LocalDateTime
 
 data class CodeDto(
     @JsonProperty val code: String,
-    @JsonProperty val date: String
+    @JsonProperty val date: String,
+    @JsonProperty val time: Int,
+    @JsonProperty val views: Int,
 ) {
-    constructor(code: Snippet) : this(code.code, code.getTimeString())
+    companion object {
+        fun fromSnippet(snippet: Snippet): CodeDto {
+            val code = snippet.code
+            val date = snippet.getTimeString()
+            val time = snippet.time ?: 0
+            val views = snippet.views
+            return CodeDto(code, date, time, views)
+        }
+    }
 }
