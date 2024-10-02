@@ -5,7 +5,6 @@ import org.hibernate.annotations.Formula
 import org.hibernate.annotations.GenericGenerator
 import org.hibernate.annotations.Type
 import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 import java.util.*
 import javax.persistence.*
 
@@ -20,6 +19,7 @@ class Snippet(
     @Type(type = "uuid-char")
     var id: UUID = UUID.randomUUID(),
     @Column(name = "code")
+    @Lob
     var code: String,
     @Column(name = "last_modified")
     var lastModified: LocalDateTime,
@@ -38,9 +38,5 @@ class Snippet(
     var viewsRestricted: Boolean = false,
     var deleted: Boolean = false
 
-) {
-    fun getTimeString(): String {
-        //todo investigate more global method. Spring date formatter?
-        return DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss").format(lastModified)
-    }
-}
+
+)

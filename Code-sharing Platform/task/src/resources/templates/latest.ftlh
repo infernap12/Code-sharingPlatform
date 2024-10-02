@@ -1,16 +1,30 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet"
-          href="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/default.min.css">
-    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js"></script>
-    <script>hljs.initHighlightingOnLoad();</script>
-    <link rel="stylesheet" type="text/css" href="/code.css"/>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Latest</title>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <link rel="stylesheet" href="/styles.css">
 </head>
 <body>
-<#list snippets as snippet>
-    <span id="load_date">${snippet.getTimeString()}</span>
-    <pre id="code_snippet"><code>${snippet.code}</code></pre>
-</#list>
+<div class="container">
+    <header>
+        <h1>Latest Code Snippets</h1>
+    </header>
+    <main>
+        <#list snippets as snippet>
+            <div class="snippet-card">
+                <div class="snippet-info">
+                    <span class="date">${dateTimeFormatter.format(snippet.lastModified)}</span>
+                </div>
+                <pre id="code_snippet" class="code-block"><code>${snippet.code}</code></pre>
+            </div>
+        </#list>
+    </main>
+</div>
+<script src="/latest-script.js"></script>
 </body>
 </html>

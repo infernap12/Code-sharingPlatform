@@ -1,16 +1,34 @@
-function send() {
-    let object = {
-        "code": document.getElementById("code_snippet").value
-    };
+document.addEventListener('DOMContentLoaded', function () {
+    const form = document.getElementById('codeForm');
 
-    let json = JSON.stringify(object);
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
 
-    let xhr = new XMLHttpRequest();
-    xhr.open("POST", '/api/code/new', false)
-    xhr.setRequestHeader('Content-type', 'application/json; charset=utf-8');
-    xhr.send(json);
+        const code = document.getElementById('code_snippet').value;
+        const time = document.getElementById('time_restriction').value;
+        const views = document.getElementById('views_restriction').value;
 
-    if (xhr.status == 200) {
-        alert("Success!");
-    }
-}
+        const data = {
+            code: code,
+            time: time ? parseInt(time) : 0,
+            views: views ? parseInt(views) : 0
+        };
+
+        fetch('/api/code/new', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+            .then(response => response.json())
+            .then(result => {
+                alert('Success! New code snippet ID: ' + result.id);
+                form.reset();
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred while submitting the code.');
+            });
+    });
+});
